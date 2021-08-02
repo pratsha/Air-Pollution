@@ -1,8 +1,12 @@
-complete<-function(directory, id=1:332){
+corr<-function(directory,threshold=0){
+  source("complete.R")
+  
+  check=complete(directory)
+  
+  x=subset(check,check[,2]>threshold)
   
   specData=NULL
-  
-  for (monitorId in id) {
+  for (monitorId in x[,1]) {
     
     monitorIdUpdate=monitorId
     while(nchar(monitorIdUpdate)<3)
@@ -11,15 +15,14 @@ complete<-function(directory, id=1:332){
     }
     
     path<-paste(getwd(),"/",directory,"/",monitorIdUpdate,".csv",sep="")
-   
     specDataMonitorId=read.csv(path,header = TRUE)
     
     countComplete<-specDataMonitorId[complete.cases(specDataMonitorId),]
-    
-    specData<-rbind(specData,c(monitorId,nrow(countComplete)))
-  
+    specData<-rbind(specData,cor(countComplete$sulfat,countComplete$nitrate))
+     
     
   }
-  colnames(specData)<-c("ID","nobs")
   specData
+
+  
 }
